@@ -19,20 +19,18 @@ class _StockHomePageState extends ConsumerState<StockHomePage> {
   void initState() {
     super.initState();
 
-    _subscription = ref.listenManual<StockState>(
-      stockProvider,
-      (prev, next) {
-        if (next.showNoInternetMessage) {
-          _showNoInternetDialog();
-         
+    _subscription = ref.listenManual<StockState>(stockProvider, (prev, next) {
+      if (next.showNoInternetMessage) {
+        _showNoInternetDialog();
 
-          // Reset flag so the snackbar doesn't repeat
-          ref.read(stockProvider.notifier).state =
-              next.copyWith(showNoInternetMessage: false);
-        }
-      },
-    );
+        // Reset flag so the snackbar doesn't repeat
+        ref.read(stockProvider.notifier).state = next.copyWith(
+          showNoInternetMessage: false,
+        );
+      }
+    });
   }
+
   void _showNoInternetDialog() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showDialog(
@@ -102,8 +100,6 @@ class _StockHomePageState extends ConsumerState<StockHomePage> {
   }
 }
 
-
-
 class StockTile extends StatelessWidget {
   final String ticker;
   const StockTile({super.key, required this.ticker});
@@ -115,14 +111,16 @@ class StockTile extends StatelessWidget {
         children: [
           Text(ticker),
           const SizedBox(width: 6),
-          Consumer(builder: (context, ref, _) {
-            final isSuspect = ref.watch(
-              stockProvider.select((s) => s.suspectTickers.contains(ticker)),
-            );
-            return isSuspect
-                ? const Icon(Icons.warning, color: Colors.orange, size: 16)
-                : const SizedBox.shrink();
-          }),
+          Consumer(
+            builder: (context, ref, _) {
+              final isSuspect = ref.watch(
+                stockProvider.select((s) => s.suspectTickers.contains(ticker)),
+              );
+              return isSuspect
+                  ? const Icon(Icons.warning, color: Colors.orange, size: 16)
+                  : const SizedBox.shrink();
+            },
+          ),
         ],
       ),
       trailing: Row(
@@ -136,7 +134,6 @@ class StockTile extends StatelessWidget {
     );
   }
 }
-
 
 class _PriceText extends ConsumerWidget {
   final String ticker;
@@ -213,7 +210,7 @@ class _FlashIndicatorState extends ConsumerState<_FlashIndicator> {
     //     }
     //   });
 
-    //   setState(() {}); 
+    //   setState(() {});
     // }
 
     return AnimatedSwitcher(
